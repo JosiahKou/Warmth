@@ -1,20 +1,37 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class Campfire : MonoBehaviour
 {
-    [SerializeField] private float radius = 5f;
+    [SerializeField] private float radius = 4f;
     [SerializeField] private Transform player;
     [SerializeField] private Tilemap zoneTilemap;
+    [SerializeField] private TileBase campFireTile;
     [SerializeField] private TileBase innerTile;
     [SerializeField] private TileBase middleTile;
     [SerializeField] private TileBase outerTile;
     [SerializeField][Range(0f, 1f)] private float innerPercent = 0.3f;
     [SerializeField][Range(0f, 1f)] private float middlePercent = 0.6f;
 
+    [SerializeField] private float playerHealth = 10f;
+    private float maxHealth = 10f;
+    private float damageRate = 1f;
+    private float healRate = 2f;
+    private Slider healthBar;
+
     void Start()
     {
+        PlaceCampfireTile();
         DrawZoneTiles();
+        playerHealth = maxHealth;
+        
+        healthBar = GameObject.Find("HealthBar")?.GetComponent<Slider>();
+        if (healthBar != null)
+        {
+            healthBar.maxValue = maxHealth;
+            healthBar.value = playerHealth;
+        }
     }
 
     void Update()
@@ -22,15 +39,40 @@ public class Campfire : MonoBehaviour
         if (player == null) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
-
+        
         if (distance <= radius)
         {
-            Debug.Log("Player is within campfire zone!");
+            playerHealth += healRate * Time.deltaTime;
+            playerHealth = Mathf.Min(playerHealth, maxHealth);
         }
         else
         {
-            Debug.Log("Player is outside campfire zone");
+            playerHealth -= damageRate * Time.deltaTime;
+            playerHealth = Mathf.Max(playerHealth, 0f);
         }
+        
+        if (healthBar != null)
+        {
+            healthBar.value = playerHealth;
+        }
+        
+        if (playerHealth <= 0)
+        {
+            Debug.Log("Player died!");
+        }
+    }
+
+    void PlaceCampfireTile()
+    {
+        if (zoneTilemap == null || campFireTile == null) return;
+        
+        Vector3Int centerPos = new Vector3Int(
+            Mathf.RoundToInt(transform.position.x),
+            Mathf.RoundToInt(transform.position.y),
+            0
+        );
+        
+        zoneTilemap.SetTile(centerPos, campFireTile);
     }
 
     public void DrawZoneTiles()
@@ -39,6 +81,8 @@ public class Campfire : MonoBehaviour
             return;
 
         zoneTilemap.ClearAllTiles();
+        
+        PlaceCampfireTile();
 
         float innerRadius = radius * innerPercent;
         float middleRadius = radius * middlePercent;
@@ -49,6 +93,8 @@ public class Campfire : MonoBehaviour
         {
             for (int y = -intRadius; y <= intRadius; y++)
             {
+                if (x == 0 && y == 0) continue;
+
                 float distance = Mathf.Sqrt(x * x + y * y);
 
                 if (distance <= radius)
