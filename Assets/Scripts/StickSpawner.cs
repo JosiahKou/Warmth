@@ -8,18 +8,17 @@ public class StickSpawner : MonoBehaviour
     public float spawnInterval = 2f;
     
     [Header("Spawn Area")]
-    public float spawnAreaSize = 50f; // Size of the square spawn area
-    public Vector2 spawnAreaCenter = Vector2.zero; // Center of spawn area
+    public float spawnAreaSize = 50f; 
+    public Vector2 spawnAreaCenter = Vector2.zero; 
     
     [Header("Exclusion Zone")]
-    public Campfire campfire; // Reference to the campfire object
+    public Campfire campfire; 
     
     private float spawnTimer;
     private int currentStickCount;
     
     void Update()
     {
-        // Spawn sticks at intervals if under the max
         if (currentStickCount < maxSticks)
         {
             spawnTimer += Time.deltaTime;
@@ -40,7 +39,6 @@ public class StickSpawner : MonoBehaviour
             GameObject stick = Instantiate(stickPrefab, spawnPosition, Quaternion.Euler(0, 0, Random.Range(0, 360)));
             currentStickCount++;
             
-            // Subscribe to stick destruction to update count
             Stick stickComponent = stick.GetComponent<Stick>();
             if (stickComponent != null)
             {
@@ -52,16 +50,14 @@ public class StickSpawner : MonoBehaviour
     Vector2 GetRandomPositionOutsideCircle()
     {
         int maxAttempts = 30;
-        float exclusionRadius = campfire.GetRadius(); // Get radius from Campfire script
+        float exclusionRadius = campfire.Radius;
         
         for (int i = 0; i < maxAttempts; i++)
         {
-            // Generate random position in square
             float randomX = Random.Range(-spawnAreaSize / 2, spawnAreaSize / 2);
             float randomY = Random.Range(-spawnAreaSize / 2, spawnAreaSize / 2);
             Vector2 randomPos = spawnAreaCenter + new Vector2(randomX, randomY);
             
-            // Check if position is outside exclusion circle
             Vector2 exclusionCenter = campfire.transform.position;
             float distance = Vector2.Distance(randomPos, exclusionCenter);
             
@@ -75,7 +71,6 @@ public class StickSpawner : MonoBehaviour
         return Vector2.zero;
     }
     
-    // Call this when a stick is collected to decrement count
     public void OnStickCollected()
     {
         currentStickCount--;
@@ -83,17 +78,15 @@ public class StickSpawner : MonoBehaviour
     
     void OnDrawGizmosSelected()
     {
-        // Visualize spawn area (square)
         Gizmos.color = Color.green;
         Vector3 center3D = new Vector3(spawnAreaCenter.x, spawnAreaCenter.y, 0);
         Vector3 size = new Vector3(spawnAreaSize, spawnAreaSize, 0.1f);
         Gizmos.DrawWireCube(center3D, size);
         
-        // Visualize exclusion zone (circle)
         if (campfire != null)
         {
             Gizmos.color = Color.red;
-            DrawCircle(campfire.transform.position, campfire.GetRadius());
+            DrawCircle(campfire.transform.position, campfire.Radius);
         }
     }
     
