@@ -6,6 +6,9 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 5f;
     private Rigidbody2D rb;
     private Vector2 moveInput;
+    
+    // Stick collection
+    public int sticksCollected = 0;
 
     void Start()
     {
@@ -32,5 +35,23 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         rb.linearVelocity = moveInput * speed;
+    }
+    
+    // Called when the player collects a stick
+    public void CollectStick()
+    {
+        sticksCollected++;
+        Debug.Log("Sticks collected: " + sticksCollected);
+        
+        // You can add additional logic here, like:
+        // - Play a collection sound
+        // - Update UI
+        // - Add the stick to the campfire, etc.
+    }
+    
+    // Optional: Get the current stick count
+    public int GetStickCount()
+    {
+        return sticksCollected;
     }
 }
