@@ -20,17 +20,35 @@ public class Campfire : MonoBehaviour
     private float healRate = 2f;
     private Slider healthBar;
 
+    public float Health 
+    { 
+        get => playerHealth; 
+        set 
+        { 
+            playerHealth = Mathf.Clamp(value, 0f, maxHealth); 
+            if (healthBar != null) healthBar.value = playerHealth;
+            
+            if (playerHealth <= 0)
+            {
+                OnPlayerDeath();
+            }
+        }
+    }
+
+    public float MaxHealth => maxHealth;
+    public float Radius => radius;
+
     void Start()
     {
         PlaceCampfireTile();
         DrawZoneTiles();
-        playerHealth = maxHealth;
+        Health = maxHealth;
 
         healthBar = GameObject.Find("HealthBar")?.GetComponent<Slider>();
         if (healthBar != null)
         {
             healthBar.maxValue = maxHealth;
-            healthBar.value = playerHealth;
+            healthBar.value = Health;
         }
     }
 
@@ -42,23 +60,22 @@ public class Campfire : MonoBehaviour
 
         if (distance <= radius)
         {
-            playerHealth += healRate * Time.deltaTime;
-            playerHealth = Mathf.Min(playerHealth, maxHealth);
+            Health += healRate * Time.deltaTime;
         }
         else
         {
-            playerHealth -= damageRate * Time.deltaTime;
-            playerHealth = Mathf.Max(playerHealth, 0f);
+            Health -= damageRate * Time.deltaTime;
         }
+    }
 
-        if (healthBar != null)
+    void OnPlayerDeath()
+    {
+        Debug.Log("Player died!");
+        
+        UIManager ui = FindAnyObjectByType<UIManager>();
+        if (ui != null)
         {
-            healthBar.value = playerHealth;
-        }
-
-        if (playerHealth <= 0)
-        {
-            Debug.Log("Player died!");
+            ui.GameOver(); 
         }
     }
 
@@ -145,15 +162,4 @@ public class Campfire : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, radius);
     }
-
-    public float getHealth()
-    {
-        return playerHealth;
-    }
-
-    public float getMaxHealth()
-    {
-        return maxHealth;
-    }
-
 }
