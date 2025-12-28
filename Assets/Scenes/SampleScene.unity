@@ -387,6 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 5
+  sticksCollected: 0
 --- !u!212 &512961299
 SpriteRenderer:
   serializedVersion: 2
@@ -3189,9 +3190,10 @@ MonoBehaviour:
   stickPrefab: {fileID: 6336293915628452420, guid: 98194ab12ed316e4f82d72ed31bf9c0c, type: 3}
   maxSticks: 10
   spawnInterval: 2
-  spawnAreaSize: 50
+  spawnRadius: 23
   spawnAreaCenter: {x: 0, y: 0}
   campfire: {fileID: 1916684599}
+  exclusionZoneOffset: {x: 0.5, y: 0.5}
 --- !u!4 &794815915
 Transform:
   m_ObjectHideFlags: 0
@@ -3201,7 +3203,7 @@ Transform:
   m_GameObject: {fileID: 794815913}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.13944, y: 2.6184, z: 0}
+  m_LocalPosition: {x: 4.05, y: 2.59, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
