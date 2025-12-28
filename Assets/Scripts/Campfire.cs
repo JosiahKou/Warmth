@@ -25,7 +25,7 @@ public class Campfire : MonoBehaviour
         PlaceCampfireTile();
         DrawZoneTiles();
         playerHealth = maxHealth;
-        
+
         healthBar = GameObject.Find("HealthBar")?.GetComponent<Slider>();
         if (healthBar != null)
         {
@@ -39,7 +39,7 @@ public class Campfire : MonoBehaviour
         if (player == null) return;
 
         float distance = Vector2.Distance(transform.position, player.position);
-        
+
         if (distance <= radius)
         {
             playerHealth += healRate * Time.deltaTime;
@@ -50,12 +50,12 @@ public class Campfire : MonoBehaviour
             playerHealth -= damageRate * Time.deltaTime;
             playerHealth = Mathf.Max(playerHealth, 0f);
         }
-        
+
         if (healthBar != null)
         {
             healthBar.value = playerHealth;
         }
-        
+
         if (playerHealth <= 0)
         {
             Debug.Log("Player died!");
@@ -65,13 +65,13 @@ public class Campfire : MonoBehaviour
     void PlaceCampfireTile()
     {
         if (zoneTilemap == null || campFireTile == null) return;
-        
+
         Vector3Int centerPos = new Vector3Int(
             Mathf.RoundToInt(transform.position.x),
             Mathf.RoundToInt(transform.position.y),
             0
         );
-        
+
         zoneTilemap.SetTile(centerPos, campFireTile);
     }
 
@@ -81,7 +81,7 @@ public class Campfire : MonoBehaviour
             return;
 
         zoneTilemap.ClearAllTiles();
-        
+
         PlaceCampfireTile();
 
         float innerRadius = radius * innerPercent;
@@ -139,5 +139,20 @@ public class Campfire : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, radius);
+    }
+
+    public float getHealth()
+    {
+        return playerHealth;
+    }
+
+    public float getMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public float GetRadius()
+    {
+        return radius;
     }
 }
