@@ -156,8 +156,4 @@ public class Campfire : MonoBehaviour
         return maxHealth;
     }
 
-    public float GetRadius()
-    {
-        return radius;
-    }
 }
