@@ -128,6 +128,11 @@ public class Campfire : MonoBehaviour
         DrawZoneTiles();
     }
 
+    public float GetRadius()
+    {
+        return radius;
+    }
+
     public void UpdateZonePercentages(float newInnerPercent, float newMiddlePercent)
     {
         innerPercent = Mathf.Clamp01(newInnerPercent);
